@@ -1,10 +1,10 @@
 #!/bin/bash
 ################################################################################
-# barrystyle's siimp deployer
+# rotten's yiimp deployer
 #
 # Program:
-#   Install yiimp on debian 11 running Nginx, MariaDB, and php8.2
-#   v0.3 27/04/2023
+#   Install yiimp on debian 12 running Nginx, MariaDB, and php8.2
+#   v0.3 04/12/2023
 # 
 ################################################################################
 	
@@ -43,8 +43,8 @@
     clear
     echo
     echo -e "$GREEN************************************************************************$COL_RESET"
-    echo -e "$GREEN barrystyle's siimp deployer $COL_RESET"
-    echo -e "$GREEN Install yiimp on debian 11 running Nginx, MariaDB, and php8.2 $COL_RESET"
+    echo -e "$GREEN rotten's yiimp deployer $COL_RESET"
+    echo -e "$GREEN Install yiimp on debian 12 running Nginx, MariaDB, and php8.2 $COL_RESET"
     echo -e "$GREEN************************************************************************$COL_RESET"
     echo
     sleep 3
@@ -57,10 +57,10 @@
     echo 
     sleep 3
 
-    hide_output sudo cp -f sources.list /etc/apt
-    hide_output sudo apt -y update 
-    hide_output sudo apt -y upgrade
-    hide_output sudo apt -y autoremove
+     sudo cp -f sources.list /etc/apt
+     sudo apt -y update 
+     sudo apt -y upgrade
+     sudo apt -y autoremove
     apt install -y dialog python3 python3-pip acl nano apt-transport-https
     echo -e "$GREEN Done...$COL_RESET"
 
@@ -84,7 +84,7 @@
     read -e -p "Are you using a subdomain (mycryptopool.example.com?) [y/N] : " sub_domain
     read -e -p "Enter support email (e.g. admin@example.com) : " EMAIL
     read -e -p "Set Pool to AutoExchange? i.e. mine any coin with BTC address? [y/N] : " BTC
-    #read -e -p "Please enter a new location for /site/adminRights this is to customize the Admin Panel entrance url (e.g. myAdminpanel) : " admin_panel
+    read -e -p "Please enter a new location for /site/adminRights this is to customize the Admin Panel entrance url (e.g. myAdminpanel) : " admin_panel
     read -e -p "Enter the Public IP of the system you will use to access the admin panel (http://www.whatsmyip.org/) : " Public
     read -e -p "Install Fail2ban? [Y/n] : " install_fail2ban
     read -e -p "Install UFW and configure ports? [Y/n] : " UFW
@@ -109,16 +109,16 @@
     
     if [ -f /usr/sbin/apache2 ]; then
     echo -e "Removing apache..."
-    hide_output apt-get -y purge apache2 apache2-*
-    hide_output apt-get -y --purge autoremove
+     apt-get -y purge apache2 apache2-*
+     apt-get -y --purge autoremove
     fi
 
     apt install -y nginx
-    hide_output sudo rm /etc/nginx/sites-enabled/default
-    hide_output sudo systemctl start nginx.service
-    hide_output sudo systemctl enable nginx.service
-    hide_output sudo systemctl start cron.service
-    hide_output sudo systemctl enable cron.service
+     sudo rm /etc/nginx/sites-enabled/default
+     sudo systemctl start nginx.service
+     sudo systemctl enable nginx.service
+     sudo systemctl start cron.service
+     sudo systemctl enable cron.service
     sleep 5
     sudo systemctl status nginx | sed -n "1,3p"
     echo
@@ -148,8 +148,8 @@
     rootpasswd=$(openssl rand -base64 12)
     export DEBIAN_FRONTEND="noninteractive"
     apt install -y mariadb-server
-    hide_output sudo systemctl start mysql
-    hide_output sudo systemctl enable mysql
+     sudo systemctl start mysql
+     sudo systemctl enable mysql
     sleep 5
     sudo systemctl status mysql | sed -n "1,3p"
     echo
@@ -163,16 +163,16 @@
     echo
     sleep 3
     
-    source conf/pool.conf
-    if [ ! -f /etc/apt/sources.list.d/ondrej-php-bionic.list ]; then
-    hide_output sudo add-apt-repository -y ppa:ondrej/php
-    fi
-    hide_output sudo apt -y update
+    # source conf/pool.conf
+    # if [ ! -f /etc/apt/sources.list.d/ondrej-php-bionic.list ]; then
+    #  sudo add-apt-repository -y ppa:ondrej/php
+    # fi
+    #  sudo apt -y update
 
     apt install -y php8.2-fpm php8.2-opcache php8.2 php8.2-common php8.2-gd php8.2-mysql php8.2-imap php8.2-cli php8.2-cgi php-pear imagemagick libruby php8.2-curl php8.2-intl php8.2-pspell mcrypt php8.2-sqlite3 php8.2-tidy php8.2-xmlrpc php8.2-xsl memcached php-memcache php-imagick php8.2-gettext php8.2-zip php8.2-mbstring libpsl-dev libnghttp2-dev
 
     sleep 5
-    hide_output sudo systemctl start php8.2-fpm
+     sudo systemctl start php8.2-fpm
     sudo systemctl status php8.2-fpm | sed -n "1,3p"
     echo
     echo -e "$GREEN Done...$COL_RESET"
@@ -185,29 +185,29 @@
     echo
     sleep 3
     
-    apt install -y libgmp-dev libmysqlclient-dev libcurl4-gnutls-dev libkrb5-dev libldap2-dev libidn11-dev gnutls-dev libssh2-1-dev libbrotli-dev librtmp-dev sendmail mutt screen git
+    apt install -y libgmp-dev default-libmysqlclient-dev libcurl4-gnutls-dev libkrb5-dev libldap2-dev libidn11-dev gnutls-dev libssh2-1-dev libbrotli-dev librtmp-dev sendmail mutt screen git
 
-    apt install -y pwgen -y
+    apt install -y pwgen
     echo -e "$GREEN Done...$COL_RESET"
 	sleep 3
 
     
     # Installing Package to compile crypto currency
-    echo
-    echo
-    echo -e "$CYAN => Installing Package to compile crypto currency $COL_RESET"
-    echo
-    sleep 3
+    # echo
+    # echo
+    # echo -e "$CYAN => Installing Package to compile crypto currency $COL_RESET"
+    # echo
+    # sleep 3
     
-    apt install -y software-properties-common build-essential
-    apt install -y libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev zlib1g-dev libz-dev libseccomp-dev libcap-dev libminiupnpc-dev gettext
-    apt install -y libminiupnpc10 libzmq5
-    apt install -y libcanberra-gtk-module libqrencode-dev libzmq3-dev
-    apt install -y libqt5gui5 libqt5core5a libqt5webkit5-dev libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
-    hide_output sudo add-apt-repository -y ppa:bitcoin/bitcoin
-    hide_output sudo apt -y update
-    apt install -y libdb4.8-dev libdb4.8++-dev libdb5.3 libdb5.3++
-    echo -e "$GREEN Done...$COL_RESET"
+    # apt install -y software-properties-common build-essential
+    # apt install -y libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev zlib1g-dev libz-dev libseccomp-dev libcap-dev libminiupnpc-dev gettext
+    # apt install -y libminiupnpc10 libzmq5
+    # apt install -y libcanberra-gtk-module libqrencode-dev libzmq3-dev
+    # apt install -y libqt5gui5 libqt5core5a libqt5webkit5-dev libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
+    #  sudo add-apt-repository -y ppa:bitcoin/bitcoin
+    #  sudo apt -y update
+    # apt install -y libdb4.8-dev libdb4.8++-dev libdb5.3 libdb5.3++
+    # echo -e "$GREEN Done...$COL_RESET"
        
     
     # Generating Random Passwords
@@ -257,68 +257,69 @@
 
     if [[ ("$UFW" == "y" || "$UFW" == "Y" || "$UFW" == "") ]]; then
     apt install -y ufw
-    hide_output sudo ufw default deny incoming
-    hide_output sudo ufw default allow outgoing
-    hide_output sudo ufw allow ssh
-    hide_output sudo ufw allow http
-    hide_output sudo ufw allow https
-    hide_output sudo ufw allow 3333/tcp
-    hide_output sudo ufw allow 3339/tcp
-    hide_output sudo ufw allow 3334/tcp
-    hide_output sudo ufw allow 3433/tcp
-    hide_output sudo ufw allow 3555/tcp
-    hide_output sudo ufw allow 3556/tcp
-    hide_output sudo ufw allow 3573/tcp
-    hide_output sudo ufw allow 3535/tcp
-    hide_output sudo ufw allow 3533/tcp
-    hide_output sudo ufw allow 3553/tcp
-    hide_output sudo ufw allow 3633/tcp
-    hide_output sudo ufw allow 3733/tcp
-    hide_output sudo ufw allow 3636/tcp
-    hide_output sudo ufw allow 3737/tcp
-    hide_output sudo ufw allow 3739/tcp
-    hide_output sudo ufw allow 3747/tcp
-    hide_output sudo ufw allow 3833/tcp
-    hide_output sudo ufw allow 3933/tcp
-    hide_output sudo ufw allow 4033/tcp
-    hide_output sudo ufw allow 4133/tcp
-    hide_output sudo ufw allow 4233/tcp
-    hide_output sudo ufw allow 4234/tcp
-    hide_output sudo ufw allow 4333/tcp
-    hide_output sudo ufw allow 4433/tcp
-    hide_output sudo ufw allow 4533/tcp
-    hide_output sudo ufw allow 4553/tcp
-    hide_output sudo ufw allow 4633/tcp
-    hide_output sudo ufw allow 4733/tcp
-    hide_output sudo ufw allow 4833/tcp
-    hide_output sudo ufw allow 4933/tcp
-    hide_output sudo ufw allow 5033/tcp
-    hide_output sudo ufw allow 5133/tcp
-    hide_output sudo ufw allow 5233/tcp
-    hide_output sudo ufw allow 5333/tcp
-    hide_output sudo ufw allow 5433/tcp
-    hide_output sudo ufw allow 5533/tcp
-    hide_output sudo ufw allow 5733/tcp
-    hide_output sudo ufw allow 5743/tcp
-    hide_output sudo ufw allow 3252/tcp
-    hide_output sudo ufw allow 5755/tcp
-    hide_output sudo ufw allow 5766/tcp
-    hide_output sudo ufw allow 5833/tcp
-    hide_output sudo ufw allow 5933/tcp
-    hide_output sudo ufw allow 6033/tcp
-    hide_output sudo ufw allow 5034/tcp
-    hide_output sudo ufw allow 6133/tcp
-    hide_output sudo ufw allow 6233/tcp
-    hide_output sudo ufw allow 6333/tcp
-    hide_output sudo ufw allow 6433/tcp
-    hide_output sudo ufw allow 7433/tcp
-    hide_output sudo ufw allow 8333/tcp
-    hide_output sudo ufw allow 8463/tcp
-    hide_output sudo ufw allow 8433/tcp
-    hide_output sudo ufw allow 8533/tcp
-    hide_output sudo ufw --force enable
-    sleep 5
-    sudo systemctl status ufw | sed -n "1,3p"   
+     sudo ufw default deny incoming
+     sudo ufw default allow outgoing
+     sudo ufw allow 22/tcp
+     sudo ufw allow 80/tcp
+     sudo ufw allow 88/tcp
+     sudo ufw allow 443/tcp
+     sudo ufw allow 3333/tcp
+     sudo ufw allow 3339/tcp
+     sudo ufw allow 3334/tcp
+     sudo ufw allow 3433/tcp
+     sudo ufw allow 3555/tcp
+     sudo ufw allow 3556/tcp
+     sudo ufw allow 3573/tcp
+     sudo ufw allow 3535/tcp
+     sudo ufw allow 3533/tcp
+     sudo ufw allow 3553/tcp
+     sudo ufw allow 3633/tcp
+     sudo ufw allow 3733/tcp
+     sudo ufw allow 3636/tcp
+     sudo ufw allow 3737/tcp
+     sudo ufw allow 3739/tcp
+     sudo ufw allow 3747/tcp
+     sudo ufw allow 3833/tcp
+     sudo ufw allow 3933/tcp
+     sudo ufw allow 4033/tcp
+     sudo ufw allow 4133/tcp
+     sudo ufw allow 4233/tcp
+     sudo ufw allow 4234/tcp
+     sudo ufw allow 4333/tcp
+     sudo ufw allow 4433/tcp
+     sudo ufw allow 4533/tcp
+     sudo ufw allow 4553/tcp
+     sudo ufw allow 4633/tcp
+     sudo ufw allow 4733/tcp
+     sudo ufw allow 4833/tcp
+     sudo ufw allow 4933/tcp
+     sudo ufw allow 5033/tcp
+     sudo ufw allow 5133/tcp
+     sudo ufw allow 5233/tcp
+     sudo ufw allow 5333/tcp
+     sudo ufw allow 5433/tcp
+     sudo ufw allow 5533/tcp
+     sudo ufw allow 5733/tcp
+     sudo ufw allow 5743/tcp
+     sudo ufw allow 3252/tcp
+     sudo ufw allow 5755/tcp
+     sudo ufw allow 5766/tcp
+     sudo ufw allow 5833/tcp
+     sudo ufw allow 5933/tcp
+     sudo ufw allow 6033/tcp
+     sudo ufw allow 5034/tcp
+     sudo ufw allow 6133/tcp
+     sudo ufw allow 6233/tcp
+     sudo ufw allow 6333/tcp
+     sudo ufw allow 6433/tcp
+     sudo ufw allow 7433/tcp
+     sudo ufw allow 8333/tcp
+     sudo ufw allow 8463/tcp
+     sudo ufw allow 8433/tcp
+     sudo ufw allow 8533/tcp
+     sudo ufw --force enable
+    sleep 10
+    # sudo systemctl status ufw | sed -n "1,3p"   
     fi
 
     
@@ -358,21 +359,21 @@
     
     # Compil Blocknotify
     cd ~
-    hide_output git clone https://github.com/tiltpool/siimp yiimp
+     git clone https://github.com/RottenCoin/siimp yiimp
     cd $HOME/yiimp/blocknotify
     sudo sed -i 's/tu8tu5/'$blckntifypass'/' blocknotify.cpp
-    hide_output sudo make
+     sudo make
     
     # Compil iniparser
     cd $HOME/yiimp/stratum/iniparser
-    hide_output sudo make
+     sudo make
     
     # Compil Stratum
     cd $HOME/yiimp/stratum
     if [[ ("$BTC" == "y" || "$BTC" == "Y") ]]; then
     sudo sed -i 's/CFLAGS += -DNO_EXCHANGE/#CFLAGS += -DNO_EXCHANGE/' $HOME/yiimp/stratum/Makefile
     fi
-    hide_output sudo make
+     sudo make
     
     # Copy Files (Blocknotify,iniparser,Stratum)
     cd $HOME/yiimp
@@ -516,8 +517,8 @@
 
     sudo ln -s /etc/nginx/sites-available/$server_name.conf /etc/nginx/sites-enabled/$server_name.conf
     sudo ln -s /var/web /var/www/$server_name/html
-    hide_output sudo systemctl reload php8.2-fpm.service
-    hide_output sudo systemctl restart nginx.service
+     sudo systemctl reload php8.2-fpm.service
+     sudo systemctl restart nginx.service
     echo -e "$GREEN Done...$COL_RESET"
     	
     if [[ ("$ssl_install" == "y" || "$ssl_install" == "Y" || "$ssl_install" == "") ]]; then
@@ -640,8 +641,8 @@
     ' | sudo -E tee /etc/nginx/sites-available/$server_name.conf >/dev/null 2>&1
 	fi
 	
-	hide_output sudo systemctl reload php8.2-fpm.service
-	hide_output sudo systemctl restart nginx.service
+	 sudo systemctl reload php8.2-fpm.service
+	 sudo systemctl restart nginx.service
 	echo -e "$GREEN Done...$COL_RESET"
 	
 	
@@ -726,8 +727,8 @@
 
     sudo ln -s /etc/nginx/sites-available/$server_name.conf /etc/nginx/sites-enabled/$server_name.conf
     sudo ln -s /var/web /var/www/$server_name/html
-    hide_output sudo systemctl reload php8.2-fpm.service
-    hide_output sudo systemctl restart nginx.service
+     sudo systemctl reload php8.2-fpm.service
+     sudo systemctl restart nginx.service
     echo -e "$GREEN Done...$COL_RESET"
    
 	
@@ -853,8 +854,8 @@
 	echo -e "$GREEN Done...$COL_RESET"
 
     fi
-    hide_output sudo systemctl reload php8.2-fpm.service
-    hide_output sudo systemctl restart nginx.service
+     sudo systemctl reload php8.2-fpm.service
+     sudo systemctl restart nginx.service
     fi
     
     
